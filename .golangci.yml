@@ -1,0 +1,45 @@
+run:
+  deadline: 5m
+  tests: false
+  skip-dirs:
+    - pkg/test
+
+linters:
+  disable:
+    - exhaustruct
+    - gci
+  presets:
+    - bugs
+    - comment
+    - complexity
+    - error
+    - format
+    - import
+    - metalinter
+    - module
+    - performance
+    - sql
+    - style
+    - test
+    - unused
+
+linters-settings:
+  wrapcheck:
+    ignoreSigs:
+      - .Errorf(
+      - .Close(
+      - errors.New(
+      - .String(
+      - .Shutdown(
+  varnamelen:
+    ignore-decls:
+      - c echo.Context
+      - fn Func
+      - wg sync.WaitGroup
+  ireturn:
+    allow:
+      - anon
+      - error
+      - empty
+      - stdlib
+      - FliptClient

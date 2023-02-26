@@ -1,0 +1,65 @@
+@startuml Graceful Shutdown
+
+participant os as "OS Signal"
+participant app as "App"
+Participant "HTTP Server" as sgo
+Participant "Postgres" as pgo
+Participant "Redis" as rgo
+
+autonumber
+
+os -> app: Run
+
+alt Connect Postgres
+    app -> pgo: Connect & Ping
+    pgo -> app: Success
+else
+    pgo -> app: Error
+    app -> os: Terminate
+end
+
+alt Connect Redis
+    app -> rgo: Connect & Ping
+    rgo -> app: Success
+else
+    rgo -> app: Error
+    app -> os: Terminate
+end
+
+alt Run Server
+    alt
+        app -> sgo: [Goroutine] Listen and Serve
+    else
+        sgo -> app: Cancel Error
+    end
+else
+    app -> os: Terminate
+end
+
+alt Wait Signals
+    os -> app: SIGINT, SIGTERM
+    app -> app: Server Stop
+else
+
+end
+
+alt Shutdown Server
+    app -> sgo: [Goroutine] with timeout
+    sgo -> app: print status
+end
+
+alt Shutdown Concurrenly
+    alt Shutdown Postgres
+        app -> pgo: [Goroutine] with timeout
+        pgo -> app: print status
+    end
+
+    alt Shutdown Redis
+        app -> rgo: [Goroutine] with timeout
+        rgo -> app: print status
+    end
+end
+
+app -> os: Terminate
+
+@enduml

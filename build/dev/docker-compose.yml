@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  pg:
+    image: 'postgres:15-alpine'
+    environment:
+      # POSTGRES_DB: 'postgres'
+      # POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'password'
+    ports:
+      - '5432:5432'
+    volumes:
+    - '../../tmp/pg-data:/var/lib/postgresql/data'
+  redis:
+    image: 'redis:7-alpine'
+    ports:
+      - '6379:6379'
+    volumes:
+    - '../../tmp/redis-data:/data'
+  # rabbit:
+  #   image: rabbitmq:3-management-alpine
+  #   hostname: 'rabbit'
+  #   environment:
+  #     # RABBITMQ_DEFAULT_USER: 'guest'
+  #     # RABBITMQ_DEFAULT_PASS: 'guest'
+  #     RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: '-rabbit disk_free_limit ''100MB'''
+  #   ports:
+  #     - '5672:5672'
+  #     - '15672:15672'
+  #   volumes:
+  #     - '../../tmp/rabbit-data:/var/lib/rabbitmq'
+  flipt:
+    image: 'flipt/flipt:v1.19.0'
+    ports:
+      - '8080:8080'
+      - '9000:9000'
+    volumes:
+    - '../../tmp/flipt-data:/var/opt/flipt'
